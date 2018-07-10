@@ -1,14 +1,16 @@
 package ca.jackzavarella.courses.api.services;
 
 import ca.jackzavarella.courses.api.dto.InstitutionMetaData;
-import ca.jackzavarella.courses.pdf.dto.ParsedCourses;
 import ca.jackzavarella.courses.api.models.Course;
 import ca.jackzavarella.courses.api.models.Institution;
 import ca.jackzavarella.courses.api.repositories.CourseRepository;
 import ca.jackzavarella.courses.api.repositories.InstitutionRepository;
+import ca.jackzavarella.courses.pdf.dto.ParsedCourses;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by Jack Zavarella on 7/5/2018. :)
@@ -42,26 +44,19 @@ public class DatabaseService {
         this.courseRepository.saveAll(parsedCourses);
     }
 
-    public List<Institution> fetchAllInstitutions() {
-        return this.institutionRepository.findAll();
+    public Page<Institution> fetchAllInstitutions(int pageSize, int pageNumber) {
+        return this.institutionRepository.findAll(PageRequest.of(pageSize, pageNumber));
     }
 
     public Institution fetchInstitutionByName(String institution) {
         return this.institutionRepository.findInstitutionByName(institution);
     }
 
-    public List<Course> fetchCoursesWithQueries(String institution, String academicYear, String programLevel) {
-        if (academicYear == null) {
-            academicYear = this.fetchLatestAcademicYear(institution);
-        }
-        if (programLevel == null) {
-            programLevel = "Undergraduate";
-        }
-        return this.courseRepository.findAllByInstitutionAndAcademicYearAndProgramLevel(institution, academicYear, programLevel);
-        
+    public Page<Course> fetchCoursesWithQueries(String institution, String academicYear, String programLevel, int page, int size, HashMap<String, String> queries) {
+        return this.courseRepository.findAllWithQueries(institution, academicYear, programLevel, queries, page, size);
     }
 
-    private String fetchLatestAcademicYear(String institution) {
+    public String fetchLatestAcademicYear(String institution) {
         Institution fetchedInstitution = this.institutionRepository.findInstitutionByName(institution);
         String latest = fetchedInstitution.getData().get(0).getAcademicYear();
         for (int i = 1; i < fetchedInstitution.getData().size(); i++) {
@@ -70,5 +65,9 @@ public class DatabaseService {
             }
         }
         return latest;
+    }
+
+    public Course fetchCourses(String institution, String academicYear, String programLevel, String courseCode) {
+        return this.courseRepository.findByInstitutionAndAcademicYearAndProgramLevelAndCode(institution, academicYear, programLevel, courseCode);
     }
 }

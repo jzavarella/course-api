@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "courses")
 public class Course {
-    private String id, code, title, description, offerings, equates, prerequisites, corequisites, restrictions, departments, semesters, institution, academicYear, programLevel;
+    private String id, code = "", title = "", description = "", offerings = "", equates = "", prerequisites = "", corequisites = "", restrictions = "", departments = "", semesters = "", institution = "", academicYear = "", programLevel = "";
     private double weight;
 
     @JsonIgnore
