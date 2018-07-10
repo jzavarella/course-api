@@ -1,6 +1,5 @@
 package ca.jackzavarella.courses.api.repositories;
 
-import ca.jackzavarella.courses.api.dto.InstitutionMetaData;
 import ca.jackzavarella.courses.api.models.Institution;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -9,5 +8,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface InstitutionRepository extends MongoRepository<Institution, String> {
     Institution findInstitutionByName(String name);
-    Institution findInstitutionByNameAndDataContaining(String name, InstitutionMetaData data);
 }
