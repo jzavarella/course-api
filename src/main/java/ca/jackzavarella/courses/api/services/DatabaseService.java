@@ -66,4 +66,8 @@ public class DatabaseService {
         }
         return latest;
     }
+
+    public Course fetchCourses(String institution, String academicYear, String programLevel, String courseCode) {
+        return this.courseRepository.findByInstitutionAndAcademicYearAndProgramLevelAndCode(institution, academicYear, programLevel, courseCode);
+    }
 }

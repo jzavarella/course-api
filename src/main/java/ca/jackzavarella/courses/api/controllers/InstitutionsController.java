@@ -76,4 +76,17 @@ public class InstitutionsController {
         Page<Course> coursePage = this.databaseService.fetchCoursesWithQueries(institution, academicYear, programLevel, pageNumber, pageSize, queries);
         return new PagedResponse<>(coursePage.getContent(), coursePage.getTotalElements(), coursePage.getTotalPages(), coursePage.getPageable().getPageNumber(), coursePage.getPageable().getPageSize());
     }
+
+    @GetMapping("/{institution}/courses/{courseCode}")
+    public Course fetchCourse(
+            @PathVariable String institution,
+            @PathVariable String courseCode,
+            @RequestParam(required = false) String academicYear,
+            @RequestParam(defaultValue = "Undergraduate") String programLevel) {
+        if (academicYear == null) {
+            academicYear = this.databaseService.fetchLatestAcademicYear(institution);
+        }
+
+        return this.databaseService.fetchCourses(institution, academicYear, programLevel, courseCode);
+    }
 }
